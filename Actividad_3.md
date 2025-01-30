@@ -10,4 +10,5 @@
 
 - **Uso**: Guarda los valores que la CPU necesita para realizar cálculos o manipular la información.
 
-3. **A (Dirección)**:
+3. **A (Dirección)**: ES el registro utilizado para las direcciones.
+   
