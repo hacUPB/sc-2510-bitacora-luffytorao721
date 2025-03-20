@@ -1,0 +1,659 @@
+## *Actividad 1: Configuración del Ambiente de Trabajo*
+
+### *Pasos para Configurar OpenFrameworks*
+1. *Descarga OpenFrameworks*:
+   - Ve a la página oficial de [OpenFrameworks](https://openframeworks.cc/) y descarga la última versión compatible con tu sistema operativo.
+   - Descomprime la carpeta en el directorio raíz (por ejemplo, C:\ en Windows).
+
+2. *Genera un Proyecto*:
+   - Ejecuta projectGenerator.exe desde la carpeta de OpenFrameworks.
+   - Configura un nuevo proyecto y genera los archivos necesarios.
+
+3. *Modifica el Archivo ofApp.cpp*:
+   - Abre el archivo ofApp.cpp y modifícalo como se muestra a continuación:
+     cpp
+     #include "ofApp.h"
+
+     void ofApp::setup(){
+         ofBackground(0); // Establece el fondo de la pantalla en color negro
+     }
+
+     void ofApp::update(){
+         // No se necesita lógica aquí por ahora
+     }
+
+     void ofApp::draw(){
+         ofSetColor(255); // Establece el color de dibujo en blanco
+         ofDrawCircle(ofGetMouseX(), ofGetMouseY(), 20); // Dibuja un círculo en la posición del mouse
+     }
+     
+
+4. *Resultado*:
+   - Al ejecutar el programa, verás un círculo blanco que sigue el movimiento del mouse sobre un fondo negro.
+
+### *Explicación Detallada*
+- *setup*: Esta función se ejecuta una vez al inicio del programa. Aquí se inicializan variables y configuraciones, como el color de fondo.
+- *draw*: Esta función se ejecuta continuamente en un bucle. Aquí se dibuja el círculo en la posición del mouse.
+- *ofGetMouseX() y ofGetMouseY()*: Estas funciones obtienen las coordenadas actuales del mouse.
+- *ofDrawCircle(x, y, radio)*: Dibuja un círculo en las coordenadas (x, y) con el radio especificado.
+
+---
+
+## *Actividad 2: Primera Aplicación en OpenFrameworks*
+
+### *Modificaciones en el Código*
+1. *Archivo ofApp.h*:
+   - Define una clase ofApp con métodos para manejar eventos del mouse y un vector para almacenar partículas.
+     cpp
+     #pragma once
+     #include "ofMain.h"
+
+     class ofApp : public ofBaseApp{
+     public:
+         void setup();
+         void update();
+         void draw();
+
+         void mouseMoved(int x, int y);
+         void mousePressed(int x, int y, int button);
+
+     private:
+         vector<ofVec2f> particles; // Vector para almacenar las posiciones de las partículas
+         ofColor particleColor;     // Color de las partículas
+     };
+     
+
+2. *Archivo ofApp.cpp*:
+   - Implementa los métodos para dibujar partículas y cambiar su color al hacer clic.
+     cpp
+     #include "ofApp.h"
+
+     void ofApp::setup(){
+         ofBackground(0); // Fondo negro
+         particleColor = ofColor::white; // Color inicial de las partículas (blanco)
+     }
+
+     void ofApp::update(){
+         // No se necesita lógica aquí por ahora
+     }
+
+     void ofApp::draw(){
+         for(auto &pos : particles){
+             ofSetColor(particleColor); // Establece el color de las partículas
+             ofDrawCircle(pos.x, pos.y, 50); // Dibuja un círculo en cada posición almacenada
+         }
+     }
+
+     void ofApp::mouseMoved(int x, int y){
+         particles.push_back(ofVec2f(x, y)); // Añade una nueva partícula en la posición del mouse
+         if (particles.size() > 100) {
+             particles.erase(particles.begin()); // Limita el número de partículas a 100
+         }
+     }
+
+     void ofApp::mousePressed(int x, int y, int button){
+         particleColor = ofColor(ofRandom(255), ofRandom(255), ofRandom(255)); // Cambia el color de las partículas al azar
+     }
+     
+
+### *Preguntas y Respuestas*
+1. *¿Qué hace mouseMoved?*
+   - Añade una nueva partícula en la posición del mouse y limita el número de partículas a 100. Si hay más de 100 partículas, elimina la más antigua.
+   - Esto se logra con particles.push_back(ofVec2f(x, y)), que añade una nueva partícula al vector, y particles.erase(particles.begin()), que elimina la primera partícula si el tamaño del vector supera 100.
+
+2. *¿Qué hace mousePressed?*
+   - Cambia el color de las partículas al azar cuando se hace clic.
+   - ofColor(ofRandom(255), ofRandom(255), ofRandom(255)) genera un color aleatorio en formato RGB.
+
+3. *¿Qué hace setup?*
+   - Inicializa el fondo y el color de las partículas.
+   - ofBackground(0) establece el fondo en negro, y particleColor = ofColor::white inicializa el color de las partículas en blanco.
+
+4. *¿Qué hace draw?*
+   - Dibuja las partículas en la pantalla.
+   - El bucle for recorre el vector particles y dibuja un círculo en cada posición almacenada.
+
+---
+
+## *Actividad 3: Análisis y Experimentación*
+
+### *Preguntas*
+1. *¿Qué hace cada función?*
+   - setup: Inicializa variables y configuraciones.
+   - update: Actualiza la lógica del programa (no se usa aquí).
+   - draw: Dibuja en la pantalla.
+   - mouseMoved: Añade partículas al mover el mouse.
+   - mousePressed: Cambia el color de las partículas al hacer clic.
+
+2. *Experimentación*:
+   - Modifica el tamaño de las partículas o el número máximo permitido.
+   - Cambia el valor 50 en ofDrawCircle(pos.x, pos.y, 50) para ajustar el tamaño, o modifica 100 en if (particles.size() > 100) para cambiar el límite de partículas.
+
+---
+
+## *Actividad 4: Investigación Independiente*
+
+### *Recursos*
+- Mira videos de la playlist *The C++ Programming Language* de Mike Shah para profundizar en conceptos de C++.
+- Estos videos te ayudarán a entender mejor cómo funciona C++ y cómo se aplica en OpenFrameworks.
+
+---
+
+## *Actividad 5: Punteros en OpenFrameworks*
+
+### *Código Modificado*
+1. *Archivo ofApp.h*:
+   - Define una clase Sphere y un vector de punteros a esferas.
+     cpp
+     #pragma once
+     #include "ofMain.h"
+
+     class Sphere {
+     public:
+         Sphere(float x, float y, float radius);
+         void draw();
+         void update(float x, float y);
+         float getX();
+         float getY();
+         float getRadius();
+
+     private:
+         float x, y;
+         float radius;
+         ofColor color;
+     };
+
+     class ofApp : public ofBaseApp{
+     public:
+         void setup();
+         void update();
+         void draw();
+
+         void mouseMoved(int x, int y);
+         void mousePressed(int x, int y, int button);
+
+     private:
+         vector<Sphere*> spheres; // Vector de punteros a esferas
+         Sphere* selectedSphere;  // Puntero a la esfera seleccionada
+     };
+     
+
+2. *Archivo ofApp.cpp*:
+   - Implementa la lógica para seleccionar y mover esferas.
+     cpp
+     #include "ofApp.h"
+
+     Sphere::Sphere(float x, float y, float radius) : x(x), y(y), radius(radius) {
+         color = ofColor(ofRandom(255), ofRandom(255), ofRandom(255)); // Color aleatorio
+     }
+
+     void Sphere::draw() {
+         ofSetColor(color);
+         ofDrawCircle(x, y, radius); // Dibuja la esfera
+     }
+
+     void Sphere::update(float x, float y) {
+         this->x = x;
+         this->y = y; // Actualiza la posición de la esfera
+     }
+
+     float Sphere::getRadius() { return radius; }
+     float Sphere::getX() { return x; }
+     float Sphere::getY() { return y; }
+
+     void ofApp::setup(){
+         ofBackground(0);
+         for (int i = 0; i < 5; i++) {
+             float x = ofRandomWidth();
+             float y = ofRandomHeight();
+             float radius = ofRandom(20, 50);
+             spheres.push_back(new Sphere(x, y, radius)); // Crea esferas en el heap
+         }
+         selectedSphere = nullptr; // Inicialmente no hay esfera seleccionada
+     }
+
+     void ofApp::update(){
+         if (selectedSphere != nullptr) {
+             selectedSphere->update(ofGetMouseX(), ofGetMouseY()); // Mueve la esfera seleccionada
+         }
+     }
+
+     void ofApp::draw(){
+         for (auto sphere : spheres) {
+             sphere->draw(); // Dibuja todas las esferas
+         }
+     }
+
+     void ofApp::mousePressed(int x, int y, int button){
+         if(button == OF_MOUSE_BUTTON_LEFT){
+             for (auto sphere : spheres) {
+                 float distance = ofDist(x, y, sphere->getX(), sphere->getY());
+                 if (distance < sphere->getRadius()) {
+                     selectedSphere = sphere; // Selecciona la esfera
+                     break;
+                 }
+             }
+         }
+     }
+     
+
+### *Preguntas y Respuestas*
+1. *¿Qué es un puntero?*
+   - Un puntero es una variable que almacena la dirección de memoria de otra variable.
+   - En este caso, Sphere* es un puntero a un objeto de tipo Sphere.
+
+2. *¿Dónde está el puntero?*
+   - En el vector spheres y en selectedSphere.
+   - spheres es un vector de punteros a Sphere, y selectedSphere es un puntero a la esfera seleccionada.
+
+3. *¿Para qué se usa el puntero?*
+   - Para gestionar dinámicamente las esferas y mover la esfera seleccionada.
+   - Los punteros permiten manipular objetos en memoria dinámica (heap), lo que es útil para gestionar múltiples esferas.
+
+---
+
+## *Actividad 6: Corrección de Errores*
+
+### *Problema*
+- El código no permite soltar la esfera seleccionada.
+
+### *Solución*
+- Añade un manejo de eventos para soltar la esfera al hacer clic nuevamente.
+   - Esto se puede lograr añadiendo una condición en mousePressed para verificar si ya hay una esfera seleccionada y, en ese caso, deseleccionarla.
+
+---
+
+## *Actividad 7: Manejo de Memoria*
+
+### *Código Modificado*
+1. *Archivo ofApp.h*:
+   - Define una clase Sphere y un vector global de punteros.
+     cpp
+     #pragma once
+     #include "ofMain.h"
+
+     class Sphere {
+     public:
+         Sphere(float x, float y, float radius);
+         void draw() const;
+
+         float x, y;
+         float radius;
+         ofColor color;
+     };
+
+     class ofApp : public ofBaseApp {
+     public:
+         void setup();
+         void update();
+         void draw();
+
+         void keyPressed(int key);
+
+     private:
+         std::vector<Sphere*> globalVector; // Vector global de punteros
+         void createObjectInStack();
+     };
+     
+
+2. *Archivo ofApp.cpp*:
+   - Implementa la creación de objetos en el heap.
+     cpp
+     #include "ofApp.h"
+
+     Sphere::Sphere(float x, float y, float radius) : x(x), y(y), radius(radius) {
+         color = ofColor(ofRandom(255), ofRandom(255), ofRandom(255)); // Color aleatorio
+     }
+
+     void Sphere::draw() const {
+         ofSetColor(color);
+         ofDrawCircle(x, y, radius); // Dibuja la esfera
+     }
+
+     void ofApp::setup() {
+         ofBackground(0); // Fondo negro
+     }
+
+     void ofApp::update() {}
+
+     void ofApp::draw() {
+         ofSetColor(255); // Color blanco
+         for (Sphere* sphere : globalVector) {
+             if (sphere != nullptr) {
+                 ofDrawBitmapString("Objects pointed: " + ofToString(globalVector.size()), 20, 20); // Muestra el número de objetos
+                 sphere->draw(); // Dibuja la esfera
+             }
+         }
+     }
+
+     void ofApp::keyPressed(int key) {
+         if (key == 'c') {
+             Sphere* heapSphere = new Sphere(ofRandomWidth(), ofRandomHeight(), 30); // Crea un objeto en el heap
+             globalVector.push_back(heapSphere); // Añade el puntero al vector
+         }
+     }
+     
+
+### *Preguntas y Respuestas*
+1. *¿Qué sucede al presionar "c"?*
+   - Se crea una nueva esfera en el heap y se añade al vector global.
+   - new Sphere(ofRandomWidth(), ofRandomHeight(), 30) crea un objeto en el heap, y globalVector.push_back(heapSphere) almacena su puntero.
+
+2. *¿Por qué ocurre esto?*
+   - Porque los objetos creados en el heap persisten hasta que se liberan manualmente.
+   - La memoria en el heap no se libera automáticamente, a diferencia de la memoria en el stack.
+
+---
+
+## *Actividad 8: Experimentación con Memoria*
+
+### *Preguntas*
+1. *¿Cuándo usar el heap?*
+   - Cuando necesitas que los objetos persistan más allá del ámbito de una función.
+   - El heap es útil para objetos que deben existir durante toda la ejecución del programa.
+
+2. *¿Cuándo usar memoria global?*
+   - Para variables que deben ser accesibles en todo el programa.
+   - Las variables globales son útiles para compartir datos entre diferentes partes del programa.
+
+---
+
+## *Actividad 9: Liberación de Memoria*
+
+### *Código Modificado*
+1. *Archivo ofApp.h*:
+   - Define un vector de punteros a objetos en el heap.
+     cpp
+     #pragma once
+     #include "ofMain.h"
+
+     class ofApp : public ofBaseApp{
+     public:
+         void setup();
+         void update();
+         void draw();
+
+         void keyPressed(int key);
+         void mousePressed(int x, int y, int button);
+
+     private:
+         vector<ofVec2f*> heapObjects; // Vector de punteros a objetos en el heap
+     };
+     
+
+2. *Archivo ofApp.cpp*:
+   - Implementa la liberación de memoria al presionar "f".
+     cpp
+     #include "ofApp.h"
+
+     void ofApp::setup(){
+         ofBackground(0); // Fondo negro
+     }
+
+     void ofApp::update(){}
+
+     void ofApp::draw(){
+         ofSetColor(0, 0, 255); // Color azul para los objetos del heap
+         for(auto& pos : heapObjects) {
+             ofDrawCircle(pos->x, pos->y, 20); // Dibuja los objetos
+         }
+     }
+
+     void ofApp::keyPressed(int key){
+         if(key == 'f') {
+             if(!heapObjects.empty()) {
+                 delete heapObjects.back(); // Libera la memoria del último objeto
+                 heapObjects.pop_back();    // Elimina el puntero del vector
+             }
+         }
+     }
+
+     void ofApp::mousePressed(int x, int y, int button){
+         heapObjects.push_back(new ofVec2f(x, y)); // Crea un nuevo objeto en el heap
+     }
+     
+
+### *Preguntas y Respuestas*
+1. *¿Qué sucede al presionar "f"?*
+   - Se libera la memoria del último objeto creado y se elimina su puntero del vector.
+   - delete heapObjects.back() libera la memoria, y heapObjects.pop_back() elimina el puntero del vector.
+
+2. *Análisis del código*:
+   - delete heapObjects.back();: Libera la memoria del objeto.
+   - heapObjects.pop_back();: Elimina el puntero del vector.
+   - Es crucial liberar la memoria manualmente en C++ para evitar fugas de memoria.
+
+
+## *Reto de la Actividad 10*
+
+### *Descripción del Reto*
+
+Desarrollarás una aplicación en OpenFrameworks que:
+
+1. *Genera una cuadrícula de esferas en 3D*:
+   - Las esferas se distribuyen en una cuadrícula en los ejes X e Y.
+   - La posición en el eje Z se calcula usando la función:
+     cpp
+     float z = cos(ofDist(x, y, 0, 0) / distDiv) * amplitud;
+     
+   - distDiv y amplitud son variables que puedes modificar con el teclado.
+
+2. *Permite la selección de esferas con el ratón*:
+   - Al hacer clic, se convierte la posición del ratón en un rayo 3D.
+   - Se verifica si el rayo intersecta alguna esfera.
+   - Si se selecciona una esfera, se muestran sus coordenadas en pantalla.
+
+3. *Interacción con el teclado*:
+   - Modifica la separación entre esferas (xStep y yStep).
+   - Modifica la amplitud de las posiciones en el eje Z (amplitud).
+
+4. *Visualización*:
+   - Usa una cámara 3D (ofEasyCam) para explorar la escena desde diferentes ángulos.
+
+---
+
+## *Código Fuente*
+
+### *Archivo ofApp.h*
+cpp
+#pragma once
+
+#include "ofMain.h"
+
+class ofApp : public ofBaseApp {
+public:
+    void setup();
+    void update();
+    void draw();
+
+    void keyPressed(int key);
+    void mousePressed(int x, int y, int button);
+
+private:
+    ofEasyCam cam; // Cámara 3D
+    vector<ofVec3f> spherePositions; // Vector de posiciones de las esferas
+    ofVec3f selectedSphere; // Esfera seleccionada
+    bool sphereSelected; // Indica si hay una esfera seleccionada
+
+    float distDiv; // Divisor para calcular la posición en Z
+    float amplitud; // Amplitud de la oscilación en Z
+    int xStep; // Separación entre esferas en X
+    int yStep; // Separación entre esferas en Y
+
+    void convertMouseToRay(int mouseX, int mouseY, glm::vec3& rayStart, glm::vec3& rayEnd);
+    bool rayIntersectsSphere(const glm::vec3& rayStart, const glm::vec3& rayDir, const glm::vec3& sphereCenter, float sphereRadius, glm::vec3& intersectionPoint);
+};
+
+
+---
+
+### *Archivo ofApp.cpp*
+cpp
+#include "ofApp.h"
+
+void ofApp::setup() {
+    ofBackground(0); // Fondo negro
+    cam.setupPerspective(); // Configura la cámara 3D
+    distDiv = 50.0f; // Divisor para calcular la posición en Z
+    amplitud = 100.0f; // Amplitud de la oscilación en Z
+    xStep = 30; // Separación entre esferas en X
+    yStep = 30; // Separación entre esferas en Y
+
+    // Generar posiciones de las esferas
+    for (int x = -ofGetWidth() / 2; x < ofGetWidth() / 2; x += xStep) {
+        for (int y = -ofGetHeight() / 2; y < ofGetHeight() / 2; y += yStep) {
+            float z = cos(ofDist(x, y, 0, 0) / distDiv) * amplitud; // Calcular Z
+            spherePositions.push_back(ofVec3f(x, y, z)); // Almacenar posición
+        }
+    }
+}
+
+void ofApp::update() {
+    // No se necesita lógica aquí por ahora
+}
+
+void ofApp::draw() {
+    cam.begin(); // Iniciar la cámara 3D
+    ofSetColor(255); // Color blanco
+    for (auto& pos : spherePositions) {
+        ofDrawSphere(pos, 5); // Dibujar esfera en la posición (x, y, z)
+    }
+    cam.end(); // Finalizar la cámara 3D
+
+    // Mostrar información de la esfera seleccionada
+    if (sphereSelected) {
+        ofSetColor(255, 0, 0); // Color rojo
+        ofDrawBitmapString("Selected Sphere: (" + ofToString(selectedSphere.x) + ", " + ofToString(selectedSphere.y) + ", " + ofToString(selectedSphere.z) + ")", 20, 20);
+    }
+}
+
+void ofApp::keyPressed(int key) {
+    // Modificar parámetros con el teclado
+    if (key == 'a') {
+        amplitud += 10.0f; // Aumentar amplitud
+    }
+    if (key == 'z') {
+        amplitud -= 10.0f; // Disminuir amplitud
+    }
+    if (key == 's') {
+        xStep += 5; // Aumentar separación en X
+        yStep += 5; // Aumentar separación en Y
+    }
+    if (key == 'x') {
+        xStep -= 5; // Disminuir separación en X
+        yStep -= 5; // Disminuir separación en Y
+    }
+
+    // Regenerar las posiciones de las esferas
+    spherePositions.clear();
+    for (int x = -ofGetWidth() / 2; x < ofGetWidth() / 2; x += xStep) {
+        for (int y = -ofGetHeight() / 2; y < ofGetHeight() / 2; y += yStep) {
+            float z = cos(ofDist(x, y, 0, 0) / distDiv) * amplitud; // Calcular Z
+            spherePositions.push_back(ofVec3f(x, y, z)); // Almacenar posición
+        }
+    }
+}
+
+void ofApp::mousePressed(int x, int y, int button) {
+    // Convertir las coordenadas del mouse en un rayo 3D
+    glm::vec3 rayStart, rayEnd;
+    convertMouseToRay(x, y, rayStart, rayEnd);
+
+    // Comprobar si el rayo intersecta alguna esfera
+    sphereSelected = false;
+    for (auto& pos : spherePositions) {
+        glm::vec3 intersectionPoint;
+        if (rayIntersectsSphere(rayStart, rayEnd - rayStart, pos, 5.0, intersectionPoint)) {
+            selectedSphere = pos; // Almacenar la esfera seleccionada
+            sphereSelected = true; // Indicar que hay una esfera seleccionada
+            break;
+        }
+    }
+}
+
+void ofApp::convertMouseToRay(int mouseX, int mouseY, glm::vec3& rayStart, glm::vec3& rayEnd) {
+    // Obtener matrices de proyección y modelo/vista de la cámara
+    glm::mat4 modelview = cam.getModelViewMatrix();
+    glm::mat4 projection = cam.getProjectionMatrix();
+    ofRectangle viewport = ofGetCurrentViewport();
+
+    // Convertir coordenadas del mouse a Normalized Device Coordinates (NDC)
+    float x = 2.0f * (mouseX - viewport.x) / viewport.width - 1.0f;
+    float y = 1.0f - 2.0f * (mouseY - viewport.y) / viewport.height;
+
+    // Crear el rayo en NDC
+    glm::vec4 rayStartNDC(x, y, -1.0f, 1.0f); // Near plane
+    glm::vec4 rayEndNDC(x, y, 1.0f, 1.0f);   // Far plane
+
+    // Convertir a coordenadas mundiales
+    glm::vec4 rayStartWorld = glm::inverse(projection * modelview) * rayStartNDC;
+    glm::vec4 rayEndWorld = glm::inverse(projection * modelview) * rayEndNDC;
+
+    rayStartWorld /= rayStartWorld.w;
+    rayEndWorld /= rayEndWorld.w;
+
+    rayStart = glm::vec3(rayStartWorld);
+    rayEnd = glm::vec3(rayEndWorld);
+}
+
+bool ofApp::rayIntersectsSphere(const glm::vec3& rayStart, const glm::vec3& rayDir, const glm::vec3& sphereCenter, float sphereRadius, glm::vec3& intersectionPoint) {
+    glm::vec3 oc = rayStart - sphereCenter;
+
+    float a = glm::dot(rayDir, rayDir);
+    float b = 2.0f * glm::dot(oc, rayDir);
+    float c = glm::dot(oc, oc) - sphereRadius * sphereRadius;
+
+    float discriminant = b * b - 4 * a * c;
+
+    if (discriminant < 0) {
+        return false;
+    }
+    else {
+        float t = (-b - sqrt(discriminant)) / (2.0f * a);
+        intersectionPoint = rayStart + t * rayDir;
+        return true;
+    }
+}
+
+
+---
+
+## *Instrucciones para Ejecutar el Código*
+
+1. *Configuración*:
+   - Asegúrate de tener instalado OpenFrameworks.
+   - Crea un nuevo proyecto en OpenFrameworks y reemplaza los archivos ofApp.h y ofApp.cpp con el código proporcionado.
+
+2. *Compilación*:
+   - Compila el proyecto y ejecuta la aplicación.
+
+3. *Interacción*:
+   - Usa el ratón para seleccionar una esfera.
+   - Usa las teclas a, z, s y x para modificar los parámetros visuales.
+
+---
+
+## *Análisis de Memoria*
+
+### *1. Gestión de Memoria en la Aplicación*
+
+- *Vector spherePositions*:
+  - Se almacena en el *heap* porque es un contenedor dinámico (std::vector).
+  - Los elementos del vector (objetos ofVec3f) también se almacenan en el heap.
+
+- *Variables Locales*:
+  - Variables como rayStart, rayEnd y intersectionPoint se almacenan en el *stack* porque son locales a las funciones.
+
+- *Cámara (cam)*:
+  - Se almacena en el *stack* porque es una instancia local de la clase ofEasyCam.
+
+### *2. Experimentación con el Depurador*
+
+- Usa el depurador de Visual Studio para inspeccionar las direcciones de memoria de las variables y confirmar su ubicación (stack, heap o memoria global).
+- Observa cómo el vector spherePositions crece dinámicamente en el heap a medida que se añaden nuevas esferas.
+
+### *3. Conclusiones*
+
+- *Heap*: Ideal para almacenar datos dinámicos que deben persistir durante toda la ejecución del programa.
+- *Stack*: Adecuado para variables locales y temporales que no necesitan persistir fuera de su ámbito.
+- *Memoria Global*: No se usa en esta aplicación, pero sería útil para variables compartidas entre múltiples funciones o clases.
