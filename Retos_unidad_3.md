@@ -208,9 +208,6 @@ bool ofApp::rayIntersectsSphere(const glm::vec3& rayStart,
    - Usamos `ofEasyCam` para navegar la escena.  
    - En `draw()`, dibujamos cada esfera, resaltando en rojo la seleccionada y mostramos sus coordenadas en pantalla.
 
-
-Aquí tienes un **informe breve** con las tres secciones que pediste:  
-
 ---
 
 - **Objeto `vector`**  
@@ -223,34 +220,4 @@ Aquí tienes un **informe breve** con las tres secciones que pediste:
 
 ---
 
-## 2. Experimentación con el depurador de Visual Studio
-
-1. **Punto de interrupción**  
-   - Pon un breakpoint al final de `ofApp::setup()` o dentro de `generateGrid()` justo después de `spherePositions.emplace_back(...)`.  
-2. **Inspección del objeto**  
-   - En la ventana **Autos/Locals** o **Watch**, añade `spherePositions`.  
-   - Observa sus campos internos:  
-     - `_M_start`, `_M_finish`, `_M_end_of_storage` (o nombres similares según la STL):  
-       - `_M_start` apunta al inicio del buffer en **heap**.  
-       - `_M_finish` señala el final de los elementos válidos.  
-       - `_M_end_of_storage` marca el final de la capacidad reservada.  
-3. **Ventana de memoria**  
-   - Copia el valor de `_M_start` y pégalo en la ventana **Memory**.  
-   - Verás una secuencia de floats: `[x0][y0][z0][x1][y1][z1]…`  
-4. **Stack vs Heap**  
-   - En la **Call Stack**, comprueba que las variables locales de `convertMouseToRay` (rayStart, rayEnd) aparecen en el **stack frame** de esa función.  
-   - Confirma que el buffer de `spherePositions` está en una dirección mucho más alta (heap), distinta del stack.  
-
----
-
-
-
-| Aspecto                   | Observación                                                                                   |
-|---------------------------|-----------------------------------------------------------------------------------------------|
-| Ubicación del vector      | El objeto `spherePositions` vive en el **heap**, como parte de la instancia `ofApp`.         |
-| Ubicación de los datos    | El buffer interno con los `ofVec3f` también se aloca en el **heap**, en un bloque contiguo. |
-| Elementos (`ofVec3f`)     | Cada elemento ocupa 12 bytes (3 floats) y están almacenados secuencialmente.                 |
-| Crecimiento dinámico      | Al superar la capacidad, la STL reserva un nuevo bloque mayor, copia y libera el antiguo.     |
-| Variables locales         | Rayos y puntos de intersección (glm::vec3) aparecen en el **stack** durante la llamada.      |
-| Overhead                  | Además del buffer, el vector guarda 3 punteros internos (start, finish, end_of_storage).      |
 
